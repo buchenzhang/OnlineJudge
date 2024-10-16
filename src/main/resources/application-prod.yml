@@ -1,0 +1,17 @@
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://47.92.52.220:3306/oj?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&useSSL=false&allowPublicKeyRetrieval=true
+    username: root
+    password: yizhiroot
+    type: com.alibaba.druid.pool.DruidDataSource
+  redis:
+    port: 6379
+    host: localhost
+jwt:
+  header: Authorization # token????
+  secret: qwertsdfyuiop7418520 # ??
+server:
+  port: 8088
+mybatis-plus:
+  mapper-locations: com/yizhi/oj/repository/mapper/xml/*.xml

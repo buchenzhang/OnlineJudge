@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yizhi.oj.repository.mapper.ProblemMapper">
+    <resultMap id="problemDTOResultMap" type="com.yizhi.oj.repository.dto.ProblemDTO">
+        <result property="cpId" column="cpId"/>
+        <association property="problem" resultMap="problemResultMap"/>
+    </resultMap>
+
+    <resultMap id="problemResultMap" type="com.yizhi.oj.repository.entity.Problem">
+        <id property="id" column="id"/>
+        <result property="title" column="title"/>
+        <result property="type" column="type"/>
+        <result property="timeLimit" column="time_limit"/>
+        <result property="memoryLimit" column="memory_limit"/>
+        <result property="stackLimit" column="stack_limit"/>
+        <result property="description" column="description"/>
+        <result property="input" column="input"/>
+        <result property="output" column="output"/>
+        <result property="inputExamples" column="input_examples"/>
+        <result property="outputExamples" column="output_examples"/>
+        <result property="difficulty" column="difficulty"/>
+        <result property="hint" column="hint"/>
+        <result property="auth" column="auth"/>
+        <result property="gmtCreate" column="gmt_create"/>
+        <result property="gmtModified" column="gmt_modified"/>
+    </resultMap>
+
+    <select id="selectByPage" resultType="com.yizhi.oj.repository.entity.Problem">
+        SELECT
+            *
+        FROM
+            problem
+        WHERE auth = 1
+        LIMIT #{page},#{pageSize}
+    </select>
+    <select id="selectAll" resultType="java.lang.Integer">
+        SELECT
+            count(1)
+        FROM
+            problem
+        WHERE auth = 1
+    </select>
+    <select id="getByITT" resultType="com.yizhi.oj.repository.entity.Problem">
+        SELECT
+            id,title,time_limit,memory_limit,description,`input`,`output`,input_examples,output_examples,difficulty,hint,gmt_create
+        FROM
+            problem
+        WHERE
+            id LIKE CONCAT('%',#{msg},'%')
+           OR title LIKE CONCAT('%',#{msg},'%')
+           OR description LIKE CONCAT('%',#{msg},'%')
+           AND auth = 1
+           LIMIT #{page},#{pageSize}
+    </select>
+    <select id="selectAllByITT" resultType="java.lang.Integer">
+        SELECT
+            count(1)
+        FROM
+            problem
+        WHERE
+            id LIKE CONCAT('%',#{msg},'%')
+           OR title LIKE CONCAT('%',#{msg},'%')
+           OR description LIKE CONCAT('%',#{msg},'%')
+            AND auth = 1
+    </select>
+    <select id="getByCid" resultType="com.yizhi.oj.repository.dto.ProblemDTO">
+        SELECT
+            p.*,
+            cp.cid AS cpId
+        FROM
+            problem p
+                INNER JOIN
+            contest_problem cp ON p.id = cp.pid
+        WHERE
+            cp.cid = #{cid}
+--           AND auth = 3
+    </select>
+    <select id="selectByPageAll" resultType="com.yizhi.oj.repository.entity.Problem">
+        SELECT
+            *
+        FROM
+            problem
+            LIMIT #{page},#{pageSize}
+    </select>
+</mapper>

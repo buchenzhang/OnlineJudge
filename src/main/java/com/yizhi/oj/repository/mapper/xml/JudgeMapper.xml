@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yizhi.oj.repository.mapper.JudgeMapper">
+
+
+    <select id="getByPidPage" resultType="com.yizhi.oj.repository.entity.Judge">
+        select * from judge where is_contest = '0' and pid=#{pid} limit #{page},#{pageSize}
+    </select>
+    <select id="getAllPage" resultType="com.yizhi.oj.repository.entity.Judge">
+        select * from judge where is_contest = '0' limit #{page},#{pageSize}
+    </select>
+    <select id="getAll" resultType="java.lang.Integer">
+        select count(1) from judge where is_contest = 0
+    </select>
+    <select id="getAllByPid" resultType="java.lang.Integer">
+        select count(1) from judge where is_contest = 0 and pid=#{pid}
+    </select>
+    <select id="getByIdStatus" resultType="java.lang.Integer">
+        SELECT count(1) FROM judge WHERE pid = #{pid} AND `status`='ACCEPT' AND is_contest = 0
+    </select>
+    <select id="getOneNotPass" resultType="java.lang.Integer">
+        SELECT
+            count( 1 )
+        FROM
+            judge
+        WHERE
+            pid = #{pid}
+          AND `status` != 'ACCEPT' AND is_contest = 0
+    </select>
+    <select id="weekByDay" resultType="com.yizhi.oj.repository.dto.OneWeekJudgeDTO">
+        SELECT date_table.date,
+               COUNT(judge.submit_time) AS count
+        FROM (
+            SELECT CURDATE() - INTERVAL 1 WEEK + INTERVAL seq DAY AS date
+            FROM (
+            SELECT 0 AS seq UNION ALL SELECT 1 UNION ALL SELECT 2 UNION ALL SELECT 3 UNION ALL
+            SELECT 4 UNION ALL SELECT 5 UNION ALL SELECT 6 UNION ALL SELECT 7
+            ) t
+            ) date_table
+            LEFT JOIN judge ON DATE(judge.submit_time) = date_table.date
+        WHERE date_table.date >= CURDATE() - INTERVAL 1 WEEK
+        GROUP BY date_table.date
+        ORDER BY date_table.date;
+    </select>
+</mapper>

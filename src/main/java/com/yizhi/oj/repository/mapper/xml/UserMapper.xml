@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yizhi.oj.repository.mapper.UserMapper">
+    <sql id="All_Column_Not_Password">
+        id,
+            username,
+            sex,
+            academy,
+            specialty,
+            graduate_year,
+            email,
+            synopsis,
+            headshot,
+            is_attestation,
+            fans_number,
+            concern_number,
+            `role`
+    </sql>
+    <insert id="registration">
+        INSERT INTO user_info ( id, `PASSWORD`,username,`role`,headshot )
+        VALUES
+            (
+                #{id},
+                #{password},
+                #{username},
+                'ROLE_USER',
+                'http://oss.yizhi-oj.top/3da84b52-62ca-4145-940a-eb023bb71b66.png')
+    </insert>
+    <update id="update">
+        UPDATE user_info
+        <set>
+            <if test="username != null and username != ''">
+                username = #{username},
+            </if>
+            <if test="sex != null and sex != ''">
+                sex = #{sex},
+            </if>
+            <if test="academy != null and academy != ''">
+                academy = #{academy},
+            </if>
+            <if test="specialty != null and specialty != ''">
+                specialty = #{specialty},
+            </if>
+            <if test="graduateYear != null and graduateYear != ''">
+                graduate_year = #{graduateYear},
+            </if>
+            <if test="email != null and email != ''">
+                email = #{email},
+            </if>
+            <if test="synopsis != null and synopsis != ''">
+                synopsis = #{synopsis},
+            </if>
+            <if test="headshot != null and headshot != ''">
+                headshot = #{headshot},
+            </if>
+            <if test="role != null and headshot != ''">
+                `role` = #{role},
+            </if>
+        </set>
+        WHERE id = #{id}
+    </update>
+
+    <select id="getOne" resultType="com.yizhi.oj.repository.entity.User">
+        SELECT
+            *
+        FROM
+            user_info
+        WHERE
+            id = #{id}
+    </select>
+    <select id="selectByPage" resultType="com.yizhi.oj.repository.entity.User">
+        SELECT
+        <include refid="All_Column_Not_Password"></include>
+        FROM
+        user_info
+        LIMIT #{page},#{pageSize}
+    </select>
+    <select id="selectAll" resultType="java.lang.Integer">
+        SELECT
+            count(id)
+        FROM
+            user_info
+    </select>
+</mapper>
